@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         GeoFS-V3.9_Checklist-System
 // @namespace    http://tampermonkey.net/
-// @version      1.0.1
+// @version      1.0.0-Alpha
 // @description  Advanced interactive checklist framework for GeoFS v3.9.
 // @author       AwesomeOddEven-NightKeys-LunarBlink
 // @match        https://www.geo-fs.com/geofs.php*
