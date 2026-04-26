@@ -2,7 +2,7 @@
 
 ![Version](https://img.shields.io/badge/Version-1.0.0-blue?style=for-the-badge)
 ![Ecosystem](https://img.shields.io/badge/GeoFS-V3.9_Addon--Pack-64c8ff?style=for-the-badge)
-![Status](https://img.shields.io/badge/Status-Stable-green?style=for-the-badge)
+![Status](https://img.shields.io/badge/Status-In%20Construction-orange?style=for-the-badge)
 
 The professional interactive checklist framework for **GeoFS v3.9**. Designed to handle everything from generic general aviation procedures to high-fidelity airliner flows, this system ensures every phase of flight is executed with technical precision.
 
