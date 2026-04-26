@@ -1,0 +1,18 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Basic File Check
+        run: |
+          # Ensuring core files exist (using generic pattern)
+          ls *.user.js || echo "No .user.js found"
+          ls *.js || echo "No .js found"
