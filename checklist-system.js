@@ -1,6 +1,85 @@
 (function() {
     'use strict';
 
+    // Shared HUD Manager
+    function ensureSharedHUD() {
+        if (!document.getElementById('hudMinimizeBtn')) {
+            const btn = document.createElement('div');
+            btn.id = 'hudMinimizeBtn';
+            btn.innerHTML = '▣';
+            btn.title = 'Toggle Info Display';
+            btn.style.left = '0px'; 
+            btn.style.top = '50%'; 
+            btn.style.transform = 'translateY(-50%)';
+            btn.onclick = () => {
+                globalThis.hudProMinimized = !globalThis.hudProMinimized;
+                document.getElementById('flightDataDisplay')?.classList.toggle('hud-minimized', globalThis.hudProMinimized);
+                btn.innerHTML = globalThis.hudProMinimized ? '◈' : '▣';
+            };
+            document.body.appendChild(btn);
+            if (window.initAddonDraggable) window.initAddonDraggable(btn, 'geofs-addonpack-hud-icon-pos');
+        }
+
+        if (!document.getElementById('flightDataDisplay')) {
+            const panel = document.createElement('div');
+            panel.id = 'flightDataDisplay';
+            panel.innerHTML = `
+                <div id="masterCaution" style="display:none; grid-column: 1 / -1; background: #ef4444; color: #fff; text-align: center; font-weight: 900; padding: 4px; border-radius: 6px; margin-bottom: 8px; animation: cautionPulse 1s infinite; letter-spacing: 2px; font-size: 10px; border: 1px solid #fff;">MASTER CAUTION</div>
+                <div class="hud-drag-handle" style="font-size: 9px; letter-spacing: 2px; color: rgba(100,200,255,0.6);">GEOFS HUD PRO v3.9</div>
+                <div class="unified-tabs" id="hud-unified-tabs"></div>
+            `;
+            document.body.appendChild(panel);
+            if (window.initAddonDraggable) window.initAddonDraggable(panel, 'geofs-addonpack-hud-pos');
+        }
+
+        if (!window.switchHUDProTab) {
+            window.switchHUDProTab = function(activeTabId) {
+                globalThis.activeHudProTab = activeTabId;
+                document.querySelectorAll('#flightDataDisplay .unified-tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('#flightDataDisplay .unified-content').forEach(c => c.classList.remove('active'));
+                
+                const tabBtn = document.getElementById(`tab-btn-${activeTabId}`);
+                const tabContent = document.getElementById(`tab-content-${activeTabId}`);
+                if (tabBtn) tabBtn.classList.add('active');
+                if (tabContent) tabContent.classList.add('active');
+                
+                globalThis.hudProMinimized = false;
+                document.getElementById('flightDataDisplay')?.classList.remove('hud-minimized');
+                const btn = document.getElementById('hudMinimizeBtn');
+                if (btn) btn.innerHTML = '▣';
+            };
+        }
+    }
+
+    function registerHUDTab(tabId, label, contentHTML, isGrid) {
+        ensureSharedHUD();
+        const tabsContainer = document.getElementById('hud-unified-tabs');
+        if (!document.getElementById(`tab-btn-${tabId}`)) {
+            const btn = document.createElement('button');
+            btn.id = `tab-btn-${tabId}`;
+            btn.className = 'unified-tab';
+            btn.textContent = label;
+            btn.onclick = () => window.switchHUDProTab(tabId);
+            tabsContainer.appendChild(btn);
+        }
+
+        const panel = document.getElementById('flightDataDisplay');
+        if (!document.getElementById(`tab-content-${tabId}`)) {
+            const content = document.createElement('div');
+            content.id = `tab-content-${tabId}`;
+            content.className = `unified-content ${isGrid ? 'unified-grid' : ''}`;
+            content.innerHTML = contentHTML;
+            panel.appendChild(content);
+        }
+
+        setTimeout(() => {
+            const firstTab = document.querySelector('#hud-unified-tabs .unified-tab');
+            if (firstTab && !document.querySelector('.unified-tab.active')) {
+                firstTab.click();
+            }
+        }, 100);
+    }
+
     window.initChecklistSystemPro = function() {
         if (window.checklistSystemPro) return;
 
@@ -30,8 +109,15 @@
             completedItems: new Set(),
 
             init: function() {
+                // Register CHECKS Tab in Shared HUD
+                const checksHTML = `
+                    <div id="hud-checklist-display" style="background: rgba(0,0,0,0.3); padding: 8px; border-radius: 6px; border: 1px solid rgba(100,200,255,0.1); margin: 4px 0;">
+                        <!-- Checklists will render here -->
+                    </div>
+                `;
+                registerHUDTab('checks', 'CHECKS', checksHTML, false);
+
                 this.detectAircraft();
-                this.initDashboard();
                 console.log("[GeoFS-V3.9_Checklist-System] Checklist System Pro successfully initialized.");
             },
 
@@ -58,36 +144,11 @@
                 this.updateUI();
             },
 
-            initDashboard: function() {
-                if (document.getElementById("checklistCard") || document.getElementById("hud-pro-main-container")) {
-                    console.log("[GeoFS-V3.9_Checklist-System] HUD Pro detected. Checklist will render inside HUD tab.");
-                    return;
-                }
-
-                console.log("[GeoFS-V3.9_Checklist-System] Building standalone checklist card.");
-                const card = document.createElement("div");
-                card.id = "checklistCard";
-                card.className = "addonpack-card";
-                card.style.width = "350px";
-                card.innerHTML = `
-                    <div class="addonpack-card-header">
-                        <span>📋 Checklist System Pro</span>
-                        <button class="close-btn" onclick="document.getElementById('checklistCard').classList.remove('active')">✕</button>
-                    </div>
-                    <div class="addonpack-card-content" id="checklist-content-standalone" style="max-height: 400px; overflow-y: auto;">
-                        <!-- Checklists will render here -->
-                    </div>
-                `;
-                document.body.appendChild(card);
-                if (window.initAddonDraggable) window.initAddonDraggable(card);
-                this.updateUI();
-            },
-
             updateUI: function() {
-                const container = document.getElementById("tab-content-checks") || document.getElementById("checklist-content-standalone");
+                const container = document.getElementById("hud-checklist-display");
                 if (!container) return;
 
-                let html = `<div style="padding: 10px;">`;
+                let html = ``;
                 html += `<div style="font-size: 10px; color: #64c8ff; margin-bottom: 15px; text-transform: uppercase; letter-spacing: 1px;">Current: ${this.currentAircraft}</div>`;
 
                 this.currentChecklist.forEach((section, sIdx) => {
@@ -112,7 +173,6 @@
                 });
 
                 html += `<button onclick="window.checklistSystemPro.reset()" class="addonpack-btn success" style="width: 100%; margin-top: 10px; height: 28px; font-size: 10px;">RESET ALL</button>`;
-                html += `</div>`;
                 container.innerHTML = html;
             },
 
