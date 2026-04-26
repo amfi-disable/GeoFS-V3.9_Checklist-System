@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         GeoFS-V3.9_Checklist-System
 // @namespace    http://tampermonkey.net/
-// @version      1.0.0
+// @version      1.0.1
 // @description  Advanced interactive checklist framework for GeoFS v3.9.
 // @author       AwesomeOddEven-NightKeys-LunarBlink
 // @match        https://www.geo-fs.com/geofs.php*
@@ -14,7 +14,8 @@
 (function () {
     'use strict';
 
-    const checklistUrl = 'https://raw.githack.com/AwesomeOddEven-NightKeys-LunarBlink/GeoFS-V3.9_Checklist-System/main/checklist-system.js';
+    // Corrected Repo Name: Checklist-System-Pro
+    const checklistUrl = 'https://raw.githack.com/AwesomeOddEven-NightKeys-LunarBlink/GeoFS-V3.9_Checklist-System-Pro/main/checklist-system.js';
 
     function loadChecklistSystemPro() {
         if (window.checklistSystemPro) return;
@@ -24,14 +25,9 @@
         console.log('[GeoFS-V3.9_Checklist-System] Standalone module script injected.');
     }
 
-    console.log('[GeoFS-V3.9_Checklist-System] Waiting for Core and Design foundations...');
-
+    // Wait for foundations then load
     const checker = setInterval(() => {
-        // Ensure foundations are active before launching
-        const coreReady = !!window.SafeInit;
-        const designReady = !!document.getElementById('geofs-addon-design-system');
-
-        if (coreReady && designReady) {
+        if (window.SafeInit && document.getElementById('geofs-addon-design-system')) {
             clearInterval(checker);
             console.log('[GeoFS-V3.9_Checklist-System] Foundations confirmed. Booting Pro Checklists...');
             loadChecklistSystemPro();
