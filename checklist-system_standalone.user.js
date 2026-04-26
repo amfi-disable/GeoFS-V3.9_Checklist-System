@@ -9,6 +9,8 @@
 // @require      https://raw.githack.com/AwesomeOddEven-NightKeys-LunarBlink/GeoFS-V3.9_Design-System/main/design-system_standalone.user.js
 // @require      https://raw.githack.com/AwesomeOddEven-NightKeys-LunarBlink/GeoFS-V3.9_Core-Library/main/core-library_standalone.user.js
 // @grant        none
+// @updateURL    https://raw.githubusercontent.com/AwesomeOddEven-NightKeys-LunarBlink/GeoFS-V3.9_Checklist-System-Pro/main/checklist-system_standalone.user.js
+// @downloadURL  https://raw.githubusercontent.com/AwesomeOddEven-NightKeys-LunarBlink/GeoFS-V3.9_Checklist-System-Pro/main/checklist-system_standalone.user.js
 // ==/UserScript==
 
 (function () {
