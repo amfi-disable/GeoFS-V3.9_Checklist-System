@@ -6,8 +6,8 @@
 
         console.log("[GeoFS-V3.9_Checklist-System] Initializing Pro Checklist Engine...");
 
-        if (!window.registerHUDTab) {
-            console.error("[GeoFS-V3.9_Checklist-System] Core Library HUD helpers not found!");
+        if (typeof window.registerHUDTab !== 'function') {
+            console.error("[GeoFS-V3.9_Checklist-System] FATAL: window.registerHUDTab not found! Core Library might be outdated or failing.");
             return;
         }
 
@@ -80,7 +80,7 @@
                             <div onclick="window.checklistSystemPro.toggleItem('${id}')" style="display: flex; align-items: center; gap: 10px; cursor: pointer; padding: 4px; border-radius: 4px; background: ${isDone ? 'rgba(16,185,129,0.1)' : 'transparent'}; transition: all 0.2s;">
                                 <div style="width: 14px; height: 14px; border: 1px solid ${isDone ? '#10b981' : 'rgba(255,255,255,0.3)'}; border-radius: 3px; display: flex; align-items: center; justify-content: center;">
                                     ${isDone ? '<span style="color: #10b981; font-size: 10px;">✓</span>' : ''}
-                                }
+                                </div>
                                 <span style="font-size: 11px; color: ${isDone ? 'rgba(255,255,255,0.5)' : '#fff'}; text-decoration: ${isDone ? 'line-through' : 'none'};">${item}</span>
                             </div>
                         `;
