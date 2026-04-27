@@ -30,23 +30,27 @@
         };
 
         const engine = {
-            currentAircraft: "",
+            currentAircraft: "Detecting...",
             currentChecklist: [],
             completedItems: new Set(),
 
             init: function() {
                 const checksHTML = `
-                    <div id="hud-checklist-display" style="background: rgba(0,0,0,0.3); padding: 8px; border-radius: 6px; border: 1px solid rgba(100,200,255,0.1); margin: 4px 0;">
-                        <!-- Checklists will render here -->
+                    <div id="hud-checklist-display" style="background: rgba(0,0,0,0.3); padding: 8px; border-radius: 6px; border: 1px solid rgba(100,200,255,0.1); margin: 4px 0; min-height: 50px;">
+                        <div style="color: rgba(255,255,255,0.5); font-size: 10px; text-align: center; padding-top: 15px;">Initializing Checklists...</div>
                     </div>
                 `;
                 window.registerHUDTab('checks', 'CHECKS', checksHTML, false);
-                this.detectAircraft();
+                
+                // Hardened: Delay detection slightly to ensure HUD DOM is stable
+                setTimeout(() => this.detectAircraft(), 1000);
             },
 
             detectAircraft: function() {
-                if (!geofs.aircraft.instance) return;
-                const name = (geofs.aircraft.instance.definition.externalName || geofs.aircraft.instance.definition.name || "").toLowerCase();
+                let name = "Generic Aircraft";
+                if (geofs.aircraft.instance) {
+                    name = (geofs.aircraft.instance.definition.externalName || geofs.aircraft.instance.definition.name || "").toLowerCase();
+                }
                 this.currentAircraft = name;
                 
                 let found = false;
@@ -58,37 +62,51 @@
                     }
                 }
                 if (!found) this.currentChecklist = DEFAULT_CHECKLISTS["generic"];
-                this.completedItems.clear();
+                
+                // Only clear if aircraft actually changed
+                if (window._checkCurrId !== (geofs.aircraft.instance?.id || "none")) {
+                    this.completedItems.clear();
+                }
+                
                 this.updateUI();
             },
 
             updateUI: function() {
                 const container = document.getElementById("hud-checklist-display");
-                if (!container) return;
+                if (!container) {
+                    // If container is missing, try again in a bit
+                    setTimeout(() => this.updateUI(), 500);
+                    return;
+                }
 
                 let html = `<div style="font-size: 10px; color: #64c8ff; margin-bottom: 15px; text-transform: uppercase; letter-spacing: 1px;">Current: ${this.currentAircraft}</div>`;
 
-                this.currentChecklist.forEach((section, sIdx) => {
-                    html += `<div style="margin-bottom: 20px;">
-                        <div style="font-size: 12px; font-weight: bold; margin-bottom: 8px; color: #fff; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 4px;">${section.title}</div>
-                        <div style="display: flex; flex-direction: column; gap: 6px;">`;
-                    
-                    section.items.forEach((item, iIdx) => {
-                        const id = `check-${sIdx}-${iIdx}`;
-                        const isDone = this.completedItems.has(id);
-                        html += `
-                            <div onclick="window.checklistSystemPro.toggleItem('${id}')" style="display: flex; align-items: center; gap: 10px; cursor: pointer; padding: 4px; border-radius: 4px; background: ${isDone ? 'rgba(16,185,129,0.1)' : 'transparent'}; transition: all 0.2s;">
-                                <div style="width: 14px; height: 14px; border: 1px solid ${isDone ? '#10b981' : 'rgba(255,255,255,0.3)'}; border-radius: 3px; display: flex; align-items: center; justify-content: center;">
-                                    ${isDone ? '<span style="color: #10b981; font-size: 10px;">✓</span>' : ''}
+                if (this.currentChecklist.length === 0) {
+                    html += `<div style="color: rgba(255,255,255,0.3); font-size: 10px; text-align: center;">No checklists available.</div>`;
+                } else {
+                    this.currentChecklist.forEach((section, sIdx) => {
+                        html += `<div style="margin-bottom: 20px;">
+                            <div style="font-size: 12px; font-weight: bold; margin-bottom: 8px; color: #fff; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 4px;">${section.title}</div>
+                            <div style="display: flex; flex-direction: column; gap: 6px;">`;
+                        
+                        section.items.forEach((item, iIdx) => {
+                            const id = `check-${sIdx}-${iIdx}`;
+                            const isDone = this.completedItems.has(id);
+                            html += `
+                                <div onclick="window.checklistSystemPro.toggleItem('${id}')" style="display: flex; align-items: center; gap: 10px; cursor: pointer; padding: 4px; border-radius: 4px; background: ${isDone ? 'rgba(16,185,129,0.1)' : 'transparent'}; transition: all 0.2s;">
+                                    <div style="width: 14px; height: 14px; border: 1px solid ${isDone ? '#10b981' : 'rgba(255,255,255,0.3)'}; border-radius: 3px; display: flex; align-items: center; justify-content: center;">
+                                        ${isDone ? '<span style="color: #10b981; font-size: 10px;">✓</span>' : ''}
+                                    </div>
+                                    <span style="font-size: 11px; color: ${isDone ? 'rgba(255,255,255,0.5)' : '#fff'}; text-decoration: ${isDone ? 'line-through' : 'none'};">${item}</span>
                                 </div>
-                                <span style="font-size: 11px; color: ${isDone ? 'rgba(255,255,255,0.5)' : '#fff'}; text-decoration: ${isDone ? 'line-through' : 'none'};">${item}</span>
-                            </div>
-                        `;
+                            `;
+                        });
+                        html += `</div></div>`;
                     });
-                    html += `</div></div>`;
-                });
 
-                html += `<button onclick="window.checklistSystemPro.reset()" class="addonpack-btn success" style="width: 100%; margin-top: 10px; height: 28px; font-size: 10px;">RESET ALL</button>`;
+                    html += `<button onclick="window.checklistSystemPro.reset()" class="addonpack-btn success" style="width: 100%; margin-top: 10px; height: 28px; font-size: 10px; background: rgba(16,185,129,0.2); border: 1px solid #10b981; color: #10b981; border-radius: 4px; cursor: pointer;">RESET ALL</button>`;
+                }
+                
                 container.innerHTML = html;
             },
 
