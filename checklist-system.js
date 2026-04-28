@@ -123,7 +123,7 @@
 
             init: function() {
                 const checksHTML = `
-                    <div id="hud-checklist-display" style="background: rgba(0,0,0,0.3); padding: 8px; border-radius: 6px; border: 1px solid rgba(100,200,255,0.1); margin: 4px 0; min-height: 50px;">
+                    <div id="hud-checklist-display" style="background: rgba(0,0,0,0.3); padding: 8px; border-radius: 6px; border: 1px solid rgba(100,200,255,0.1); margin: 4px 0; max-height: 400px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: rgba(100,200,255,0.3) transparent;">
                         <div style="color: rgba(255,255,255,0.5); font-size: 10px; text-align: center; padding-top: 15px;">Initializing Checklists...</div>
                     </div>
                 `;
