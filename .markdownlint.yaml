@@ -1,0 +1,17 @@
+# GeoFS-V3.9_Ecosystem | Markdownlint Configuration
+# Custom rules for markdown formatting validation
+
+# Line length (MD013) - Disabled to allow long shield badges, URLs, and table rows
+MD013: false
+
+# First line in file should be a top-level heading (MD041) - Disabled for PR templates and sub-docs
+MD041: false
+
+# Headings should be surrounded by blank lines (MD022) - Disabled for template compact styles
+MD022: false
+
+# Lists should be surrounded by blank lines (MD032) - Disabled for templates and checklists
+MD032: false
+
+# Multiple consecutive blank lines (MD012) - Disabled to allow flexible spacing
+MD012: false
