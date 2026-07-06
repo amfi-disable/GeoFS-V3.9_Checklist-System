@@ -20,6 +20,6 @@ The professional interactive checklist framework for **GeoFS-V3.9**. Designed to
 
 1. Install the [Tampermonkey](https://www.tampermonkey.net/) extension.
 2. Install the script via [**Greasy Fork**](https://greasyfork.org/en/scripts/581516-geofs-v3-9-checklist-system).
-3. Refresh GeoFS and look for the **CHECKLIST** options in the HUD interface.
+3. Refresh GeoFS and the module will automatically initialize alongside the HUD.
 
 *© 2026 _init. Part of the [GeoFS-V3.9_Ecosystem](https://sites.google.com/view/geofs-v39-ecosystem/home).*
