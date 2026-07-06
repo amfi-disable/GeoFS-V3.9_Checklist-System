@@ -1,6 +1,6 @@
 # GeoFS-V3.9_Checklist-System
 
-![Version](https://img.shields.io/badge/Version-v2.0.0-3b82f6?style=flat-square&logo=git&logoColor=white)
+![Version](https://img.shields.io/badge/Version-V2.0.0-3b82f6?style=flat-square&logo=git&logoColor=white)
 ![Ecosystem](https://img.shields.io/badge/GeoFS--V3.9-Checklist_System-0ea5e9?style=flat-square&logo=trello&logoColor=white)
 ![Status](https://img.shields.io/badge/Status-Stable-10b981?style=flat-square&logo=lighthouse&logoColor=white)
 
