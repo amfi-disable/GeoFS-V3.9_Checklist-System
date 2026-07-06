@@ -123,6 +123,8 @@
 // @match               https://www.geo-fs.com/geofs.php*
 // @grant               none
 // @license             MIT
+// @downloadURL https://update.greasyfork.org/scripts/581516/GeoFS-V39_Checklist-System.user.js
+// @updateURL https://update.greasyfork.org/scripts/581516/GeoFS-V39_Checklist-System.meta.js
 // ==/UserScript==
 
 (function() {
